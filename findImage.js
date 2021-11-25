@@ -1,7 +1,9 @@
 const fs = require('fs');
 
-module.exports = function getImages(path) {
+let fileTypeFilter
+module.exports = function getImages(path, fileFilter) {
   if (!path) return
+  fileTypeFilter = fileFilter
   let fileStat
   try {
     fileStat = fs.statSync(path)
@@ -28,19 +30,12 @@ async function readFile(file, storage) {
     throw new Error(err)
   }
   const input_arr = input.split(/\r?\n/g)
-  // support file type .wxss, .css, .wxml, .html
-  if (file.match(/.(wxss|css|scss)/g)) {
-    input_arr.forEach(line => parseFile(line, /(url|url )\(/g, storage))
-  } else if (file.match(/.(wxml|html)/g)) {
-    input_arr.forEach(line => parseFile(line, /<image|<img/g, storage))
-  }
+  input_arr.forEach(line => parseFile(line, storage))
 }
-function parseFile(line, matchRegex, storage) {
-  if (line.match(matchRegex)) {
-    const match = matchImageUrl(line)
-    if (!match || (match && !match.length)) return;
-    match.forEach(_m => storage.add(_m))
-  }
+function parseFile(line, storage) {
+  const match = matchImageUrl(line)
+  if (!match || (match && !match.length)) return;
+  match.forEach(_m => storage.add(_m))
 }
 
 function readFolder(path, storage) {
@@ -70,4 +65,9 @@ function readFolder(path, storage) {
 
 // helpers
 function matchImageUrl(str) { return str.match(/(https?:\/\/.*\.(?:png|jpeg|jpg|gif))/gi) }
-function isFile(str) { return /.(wxss|css|wxml|html|js|vue)$/g.test(str) }
+function isFile(str) { 
+  if(fileTypeFilter && fileTypeFilter instanceof RegExp) {
+    return fileTypeFilter.test(str)
+  }
+  return  /.(wxss|css|wxml|html|js|vue)$/g.test(str) 
+}

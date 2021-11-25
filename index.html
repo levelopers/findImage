@@ -11,7 +11,10 @@
 <body>
 
   <form onsubmit="event.preventDefault(); sendUrl(event);">
+    <label for="url">path: </label>
     <input id="url" />
+    <label for="fileType">file type: </label>
+    <input id="fileType" />
     <input type="submit" />
   </form>
 
@@ -21,29 +24,32 @@
 <script>
   function sendUrl(e) {
     const value = document.getElementById('url').value
-    httpGetAsync('http://localhost:8080/get-images' + '?url=' + value, (val) => {
-      const list = JSON.parse(val)
-      const displayNode = document.getElementById('list')
-      displayNode.innerHTML=''
-      const listNode  = document.createElement('ul')
-      list.forEach(item => {
-        const childNode = document.createElement('li')
+    const fileType = document.getElementById('fileType').value
+    httpGetAsync(
+      'http://localhost:8080/get-images' + (value && ('?url=' + value)) + (fileType && ('&fileType=' + fileType)),
+      (val) => {
+        const list = JSON.parse(val)
+        const displayNode = document.getElementById('list')
+        displayNode.innerHTML = ''
+        const listNode = document.createElement('ul')
+        list.forEach(item => {
+          const childNode = document.createElement('li')
 
-        const imageNode = document.createElement('img')
-        imageNode.src = item
-        imageNode.addEventListener('dblclick', function (e) {
-          window.open(item)
-        });
+          const imageNode = document.createElement('img')
+          imageNode.src = item
+          imageNode.addEventListener('dblclick', function (e) {
+            window.open(item)
+          });
 
-        const textNode = document.createElement('p')
-        textNode.append(item)
+          const textNode = document.createElement('p')
+          textNode.append(item)
 
-        childNode.append(imageNode)
-        childNode.append(textNode)
-        listNode.append(childNode)
+          childNode.append(imageNode)
+          childNode.append(textNode)
+          listNode.append(childNode)
+        })
+        displayNode.append(listNode)
       })
-      displayNode.append(listNode)
-    })
   }
   function httpGetAsync(theUrl, callback) {
     var xmlHttp = new XMLHttpRequest();

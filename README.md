@@ -1,17 +1,18 @@
 # find image url links in files
 
-### support file types
-
+### default support file types
 
 -  .html
 -  .wxml
 -  .css
+-  .scss
 -  .vue
 -  .js
+- .wxss
 
 ### instructions
-
-#### node.js
+---
+#### **node.js**
 
 open images in browser: 
 > `node index.js open`
@@ -19,9 +20,11 @@ open images in browser:
 print link in command tool:  
 > `node index.js`
 
-#### html
+#### **html**
 
 run  `node server.js` open browser on  `http://localhost:8080/`
 
-(double click on image open in new tab)
+##### tips: 
+- double click on image open in new tab
+- add file type filter Regexp e.g. `.vue$` (default: `.(wxss|css|wxml|html|js|vue)$`)
 
