@@ -1,4 +1,5 @@
 // server
+const fs = require('fs')
 const http = require('http');
 const getImages = require('./findImage')
 const requestListener = async function (req, res) {
@@ -18,6 +19,9 @@ const requestListener = async function (req, res) {
       return
     }
   }
+  
+  res.writeHead(200, {'Content-Type':'text/html'})
+  res.end(fs.readFileSync('./index.html'))
 }
 
 

@@ -15,7 +15,7 @@
     <input type="submit" />
   </form>
 
-  <ul id="list"></ul>
+  <div id="list"></div>
 
 </body>
 <script>
@@ -23,14 +23,26 @@
     const value = document.getElementById('url').value
     httpGetAsync('http://localhost:8080/get-images' + '?url=' + value, (val) => {
       const list = JSON.parse(val)
-      const listNode = document.getElementById('list')
+      const displayNode = document.getElementById('list')
+      displayNode.innerHTML=''
+      const listNode  = document.createElement('ul')
       list.forEach(item => {
         const childNode = document.createElement('li')
+
         const imageNode = document.createElement('img')
         imageNode.src = item
+        imageNode.addEventListener('dblclick', function (e) {
+          window.open(item)
+        });
+
+        const textNode = document.createElement('p')
+        textNode.append(item)
+
         childNode.append(imageNode)
+        childNode.append(textNode)
         listNode.append(childNode)
       })
+      displayNode.append(listNode)
     })
   }
   function httpGetAsync(theUrl, callback) {
@@ -47,20 +59,34 @@
   body {
     background-color: green;
   }
-  ul,li {
+
+  ul,
+  li {
     list-style: none;
   }
+
   ul {
     width: 100%;
     height: 100%;
     display: flex;
     flex-wrap: wrap;
   }
+
   li {
     max-width: 15%;
+    overflow: hidden;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
+
   li img {
     width: 100%;
+  }
+
+  li p {
+    word-break: break-all;
   }
 </style>
 

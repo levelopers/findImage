@@ -28,7 +28,8 @@ async function readFile(file, storage) {
     throw new Error(err)
   }
   const input_arr = input.split(/\r?\n/g)
-  if (file.match(/.(wxss|css)/g)) {
+  // support file type .wxss, .css, .wxml, .html
+  if (file.match(/.(wxss|css|scss)/g)) {
     input_arr.forEach(line => parseFile(line, /(url|url )\(/g, storage))
   } else if (file.match(/.(wxml|html)/g)) {
     input_arr.forEach(line => parseFile(line, /<image|<img/g, storage))
